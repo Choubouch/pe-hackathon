@@ -35,62 +35,62 @@ import utility as util
 # Ensuite on selectionne les colonnes avec des données pertinentes, et qui sont communes aux autres tables pour pouvoir comparer. L'idée est de pouvoir faire des tracés communs avec les tables qui continnent les exoplanètes prouvées pour voire si les exoplanètes éventuelles sont pertinentes
 
 # %%
-df = pd.read_csv('tess_project_candidates.csv', skiprows = 69)
+tp = pd.read_csv('tess_project_candidates.csv', skiprows = 69)
 
 assoc = util.get_rename_assoc('tess_project_candidates.csv')
-df.rename(columns=assoc, inplace=True)
-df = df[['TESS Object of Interest','TESS Input Catalog ID','RA [sexagesimal]','Dec [sexagesimal]','Planet Orbital Period Value [days]','Planet Radius Value [R_Earth]','Planet Insolation Value [Earth flux]','Planet Equilibrium Temperature Value [K]','Stellar Distance [pc]','Stellar Effective Temperature Value [K]','Stellar Radius Value [R_Sun]']]
-df.set_index('TESS Object of Interest', inplace = True)
-df.head()
+tp.rename(columns=assoc, inplace=True)
+tp = tp[['TESS Object of Interest','TESS Input Catalog ID','RA [sexagesimal]','Dec [sexagesimal]','Planet Orbital Period Value [days]','Planet Radius Value [R_Earth]','Planet Insolation Value [Earth flux]','Planet Equilibrium Temperature Value [K]','Stellar Distance [pc]','Stellar Effective Temperature Value [K]','Stellar Radius Value [R_Sun]']]
+tp.set_index('TESS Object of Interest', inplace = True)
+tp.head()
 
 # %%
-df.shape
+tp.shape
 
 # %% [markdown]
 # On enlève les lignes où il y a des valeurs NaN
 
 # %%
-df.dropna(how = 'any', inplace = True)
-df.shape
+tp.dropna(how = 'any', inplace = True)
+tp.shape
 
 # %%
-df.head()
+tp.head()
 
 # %% [markdown]
 # ### On commence par regarder grossièrement les données (notamment les moyennes)
 
 # %%
-df.describe()
+tp.describe()
 
 # %% [markdown]
 # ### On trace la répartition des températures d'équilibre des planètes
 
 # %%
-df['Planet Equilibrium Temperature Value [K]'].hist(bins = 100, legend = True)
+tp['Planet Equilibrium Temperature Value [K]'].hist(bins = 100, legend = True)
 
 # %% [markdown]
 # ### Ici on test la répartition des rayons des planètes
 
 # %%
-df['Planet Radius Value [R_Earth]'].hist(bins = 100, legend = True)
+tp['Planet Radius Value [R_Earth]'].hist(bins = 100, legend = True)
 
 # %% [markdown]
 # On voit qu'il y a des valeurs très élevée qui dégradent l'affichage, on froce donc la fenetre
 
 # %%
-df['Planet Radius Value [R_Earth]'].hist(bins = 100, legend = True, range = [0,50])
+tp['Planet Radius Value [R_Earth]'].hist(bins = 100, legend = True, range = [0,50])
 
 # %% [markdown]
 # ### Là on regarde le lien qui existe entre la temperature de la planète et la temperature de son étoile
 
 # %%
-df.plot.scatter(x = 'Stellar Effective Temperature Value [K]', y = 'Planet Equilibrium Temperature Value [K]')
+tp.plot.scatter(x = 'Stellar Effective Temperature Value [K]', y = 'Planet Equilibrium Temperature Value [K]')
 
 # %% [markdown]
 # ### Et là entre la période de révolution et le rayon de l'étoile
 
 # %%
-df.plot.scatter(y = 'Stellar Radius Value [R_Sun]', x = 'Planet Orbital Period Value [days]')
+tp.plot.scatter(y = 'Stellar Radius Value [R_Sun]', x = 'Planet Orbital Period Value [days]')
 
 # %% [markdown]
 # On voit on tracé un peu bizarre
@@ -99,13 +99,13 @@ df.plot.scatter(y = 'Stellar Radius Value [R_Sun]', x = 'Planet Orbital Period V
 # ### On regarde alors le rayon de la planète en fonction de la periode
 
 # %%
-df.plot.scatter(x = 'Planet Orbital Period Value [days]', y = 'Planet Radius Value [R_Earth]')
+tp.plot.scatter(x = 'Planet Orbital Period Value [days]', y = 'Planet Radius Value [R_Earth]')
 
 # %% [markdown]
 # ### Là on regarde la corrélation entre la temperature de la planète et l'insolation qu'elle reçoit
 
 # %%
-df.plot.scatter(x = 'Planet Insolation Value [Earth flux]', y = 'Planet Equilibrium Temperature Value [K]')
+tp.plot.scatter(x = 'Planet Insolation Value [Earth flux]', y = 'Planet Equilibrium Temperature Value [K]')
 
 # %% [markdown]
 # On voit une jolie loi qui semble se dessiner
@@ -114,6 +114,4 @@ df.plot.scatter(x = 'Planet Insolation Value [Earth flux]', y = 'Planet Equilibr
 # ### On va regarder le lien entre rayon de la planète et temperature d'équilibre
 
 # %%
-df.plot.scatter(x = 'Planet Equilibrium Temperature Value [K]', y = 'Planet Radius Value [R_Earth]')
-
-# %%
+tp.plot.scatter(x = 'Planet Equilibrium Temperature Value [K]', y = 'Planet Radius Value [R_Earth]')
