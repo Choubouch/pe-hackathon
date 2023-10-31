@@ -7,7 +7,7 @@
 #       format_version: '1.5'
 #       jupytext_version: 1.15.1
 #   kernelspec:
-#     display_name: Python 3 (ipykernel)
+#     display_name: Python 3
 #     language: python
 #     name: python3
 # ---
@@ -56,25 +56,43 @@ tp.dropna(how = 'any', inplace = True)
 
 # ## Traitement des données
 
+# #### Nombre de découverte en fonction de l'année
+
 tcp.hist('Discovery Year', bins=50);
+
+# #### Répartition des rayons des planètes
 
 tcp.hist('Planet Radius [Earth Radius]', bins=50);
 
+# #### Répartition des masses des planètes
+
 tcp.hist('Planet Mass or Mass*sin(i) [Earth Mass]', bins=50);
+
+# #### Répartition des températures d'équilibre
 
 tcp.hist('Equilibrium Temperature [K]', bins=50);
 
+# #### Corrélation entre température de la planète et insolation
+
 tcp.plot.scatter(y='Equilibrium Temperature [K]', x='Insolation Flux [Earth Flux]');
+
+# #### Corrélation entre température de la planète et température de son étoile
 
 tcp.plot.scatter(y='Equilibrium Temperature [K]', x='Stellar Effective Temperature [K]');
 
+# #### Corrélation entre période de rotation et rayon de la planète
+
 tcp.plot.scatter(y='Orbital Period [days]', x='Planet Radius [Earth Radius]');
+
+# #### Corrélation du rayon des planètes en fonction de la température d'équilibre
 
 tcp.plot.scatter(x='Equilibrium Temperature [K]', y='Planet Radius [Earth Radius]');
 
+# #### Lien entre rayon des planètes et température d'équilibre en fonction de l'année
+
 sns.relplot(data=tcp, x='Distance [pc]', y='Stellar Radius [Solar Radius]', hue='Discovery Year');
 
-sns.relplot(data=tcp, x='Stellar Effective Temperature [K]', hue='Insolation Flux [Earth Flux]', y='Equilibrium Temperature [K]');
+# #### Lien entre température des planètes et de leur étoile en fonction de l'insolation des étoiles
 
 sns.relplot(data=tcp, x='Stellar Effective Temperature [K]', hue='Insolation Flux [Earth Flux]', y='Equilibrium Temperature [K]');
 
