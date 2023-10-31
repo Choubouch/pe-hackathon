@@ -119,12 +119,18 @@ k2.drop(['Default Parameter Set','Planetary Parameter Reference','System Paramet
 
 tcp.hist('Discovery Year', bins=50);
 
+# Ici pour les exoplanètes potentielles et effectivement trouvées par K2
+k2.hist('Discovery Year')
+
 # #### Répartition des rayons des planètes
 
 tcp.hist('Planet Radius [Earth Radius]', bins=50);
 
 # Ici pour les exoplanètes éventuelles trouvées par TESS
 tp['Planet Radius Value [R_Earth]'].hist(bins = 100, legend = True)
+
+# Ici pour les exoplanètes potentielles et effectivement trouvées par K2
+k2['Planet Radius [Earth Radius]'].hist(bins=100, legend = True)
 
 # #### Répartition des masses des planètes
 
@@ -137,12 +143,18 @@ tcp.hist('Equilibrium Temperature [K]', bins=50);
 # Ici pour les exoplanètes éventuelles trouvées par TESS
 tp['Planet Equilibrium Temperature Value [K]'].hist(bins = 100, legend = True)
 
+# Ici pour les exoplanètes potentielles et effectivement trouvées par K2
+k2['Equilibrium Temperature [K]'].hist(bins=500, legend = True)
+
 # #### Corrélation entre température de la planète et insolation
 
 tcp.plot.scatter(y='Equilibrium Temperature [K]', x='Insolation Flux [Earth Flux]');
 
 # Ici pour les exoplanètes éventuelles trouvées par TESS
 tp.plot.scatter(x = 'Planet Insolation Value [Earth flux]', y = 'Planet Equilibrium Temperature Value [K]')
+
+# Ici pour les exoplanètes potentielles et effectivement trouvées par K2
+k2.plot.scatter(x='Insolation Flux [Earth Flux]',y='Equilibrium Temperature [K]')
 
 # #### Corrélation entre température de la planète et température de son étoile
 
@@ -151,6 +163,9 @@ tcp.plot.scatter(y='Equilibrium Temperature [K]', x='Stellar Effective Temperatu
 # Ici pour les exoplanètes éventuelles trouvées par TESS
 tp.plot.scatter(x = 'Stellar Effective Temperature Value [K]', y = 'Planet Equilibrium Temperature Value [K]')
 
+# Ici pour les exoplanètes potentielles et effectivement trouvées par K2
+k2.plot.scatter(x='Insolation Flux [Earth Flux]',y='Equilibrium Temperature [K]')
+
 # #### Corrélation entre période de rotation et rayon de la planète
 
 tcp.plot.scatter(y='Orbital Period [days]', x='Planet Radius [Earth Radius]');
@@ -158,9 +173,15 @@ tcp.plot.scatter(y='Orbital Period [days]', x='Planet Radius [Earth Radius]');
 # Ici pour les exoplanètes éventuelles trouvées par TESS
 tp.plot.scatter(x = 'Planet Orbital Period Value [days]', y = 'Planet Radius Value [R_Earth]')
 
+# Ici pour les exoplanètes potentielles et effectivement trouvées par K2
+k2.plot.scatter(y='Planet Radius [Earth Radius]',x='Orbital Period [days]')
+
 # #### Corrélation du rayon des planètes en fonction de la température d'équilibre
 
 tcp.plot.scatter(x='Equilibrium Temperature [K]', y='Planet Radius [Earth Radius]');
+
+# Ici pour les exoplanètes potentielles et effectivement trouvées par K2
+k2.plot.scatter(y='Planet Radius [Earth Radius]',x='Equilibrium Temperature [K]')
 
 # #### Lien entre rayon des planètes et température d'équilibre en fonction de l'année
 
@@ -169,5 +190,17 @@ sns.relplot(data=tcp, x='Distance [pc]', y='Stellar Radius [Solar Radius]', hue=
 # #### Lien entre température des planètes et de leur étoile en fonction de l'insolation des étoiles
 
 sns.relplot(data=tcp, x='Stellar Effective Temperature [K]', hue='Insolation Flux [Earth Flux]', y='Equilibrium Temperature [K]');
+
+
+
+
+
+
+
+
+
+
+
+
 
 
