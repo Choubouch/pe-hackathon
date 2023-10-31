@@ -7,7 +7,7 @@
 #       format_version: '1.5'
 #       jupytext_version: 1.15.1
 #   kernelspec:
-#     display_name: Python 3
+#     display_name: Python 3 (ipykernel)
 #     language: python
 #     name: python3
 # ---
@@ -123,6 +123,9 @@ tcp.hist('Discovery Year', bins=50);
 
 tcp.hist('Planet Radius [Earth Radius]', bins=50);
 
+# Ici pour les exoplanètes éventuelles trouvées par TESS
+tp['Planet Radius Value [R_Earth]'].hist(bins = 100, legend = True)
+
 # #### Répartition des masses des planètes
 
 tcp.hist('Planet Mass or Mass*sin(i) [Earth Mass]', bins=50);
@@ -131,17 +134,29 @@ tcp.hist('Planet Mass or Mass*sin(i) [Earth Mass]', bins=50);
 
 tcp.hist('Equilibrium Temperature [K]', bins=50);
 
+# Ici pour les exoplanètes éventuelles trouvées par TESS
+tp['Planet Equilibrium Temperature Value [K]'].hist(bins = 100, legend = True)
+
 # #### Corrélation entre température de la planète et insolation
 
 tcp.plot.scatter(y='Equilibrium Temperature [K]', x='Insolation Flux [Earth Flux]');
+
+# Ici pour les exoplanètes éventuelles trouvées par TESS
+tp.plot.scatter(x = 'Planet Insolation Value [Earth flux]', y = 'Planet Equilibrium Temperature Value [K]')
 
 # #### Corrélation entre température de la planète et température de son étoile
 
 tcp.plot.scatter(y='Equilibrium Temperature [K]', x='Stellar Effective Temperature [K]');
 
+# Ici pour les exoplanètes éventuelles trouvées par TESS
+tp.plot.scatter(x = 'Stellar Effective Temperature Value [K]', y = 'Planet Equilibrium Temperature Value [K]')
+
 # #### Corrélation entre période de rotation et rayon de la planète
 
 tcp.plot.scatter(y='Orbital Period [days]', x='Planet Radius [Earth Radius]');
+
+# Ici pour les exoplanètes éventuelles trouvées par TESS
+tp.plot.scatter(x = 'Planet Orbital Period Value [days]', y = 'Planet Radius Value [R_Earth]')
 
 # #### Corrélation du rayon des planètes en fonction de la température d'équilibre
 
