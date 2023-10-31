@@ -46,4 +46,26 @@ tcp.drop(to_drop, axis=1, inplace=True)
 
 # ## Traitement des données
 
+tcp.hist('Discovery Year', bins=50);
+
+tcp.hist('Planet Radius [Earth Radius]', bins=50);
+
+tcp.hist('Planet Mass or Mass*sin(i) [Earth Mass]', bins=50);
+
+tcp.hist('Equilibrium Temperature [K]', bins=50);
+
+tcp.plot.scatter(y='Equilibrium Temperature [K]', x='Insolation Flux [Earth Flux]');
+
+tcp.plot.scatter(y='Equilibrium Temperature [K]', x='Stellar Effective Temperature [K]');
+
+tcp.plot.scatter(y='Orbital Period [days]', x='Planet Radius [Earth Radius]');
+
+tcp.plot.scatter(x='Equilibrium Temperature [K]', y='Planet Radius [Earth Radius]');
+
+sns.relplot(data=tcp, x='Distance [pc]', y='Stellar Radius [Solar Radius]', hue='Discovery Year');
+
+sns.relplot(data=tcp, x='Stellar Effective Temperature [K]', hue='Insolation Flux [Earth Flux]', y='Equilibrium Temperature [K]');
+
+sns.relplot(data=tcp, x='Stellar Effective Temperature [K]', hue='Insolation Flux [Earth Flux]', y='Equilibrium Temperature [K]');
+
 
