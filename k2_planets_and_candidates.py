@@ -7,23 +7,23 @@ import seaborn as sns
 # Nous avons trouvé 4 bases de données à exploiter, elles contiennent les exoplanètes ou les candidats à être des exoplanètes. Trois proviennent du satellite TESS et celui-ci provient du satellite K2 
 # On commence par extraire la base de donnée 
 
-df = pd.read_csv('k2_planets_and_candidates.csv', skiprows = 98)
-df.head()
+dfa = pd.read_csv('k2_planets_and_candidates.csv', skiprows = 98)
+dfa.head()
 
-df.describe()
+dfa.describe()
 
 
 
 assoc = util.get_rename_assoc('k2_planets_and_candidates.csv')
-df.rename(columns=assoc, inplace=True)
+dfa.rename(columns=assoc, inplace=True)
 
-df.head()
+dfa.head()
 
-df.columns
+dfa.columns
 
-df.columns
+dfa.columns
 
-df.drop(['Default Parameter Set','Planetary Parameter Reference','System Parameter Reference',
+dfa.drop(['Default Parameter Set','Planetary Parameter Reference','System Parameter Reference',
        'Archive Disposition', 'Archive Disposition Reference', 'Discovery Method', 'Discovery Facility', 'Solution Type',
        'Controversial Flag',
        'Orbital Period Upper Unc. [days]', 'Orbital Period Lower Unc. [days]',
@@ -74,9 +74,9 @@ df.drop(['Default Parameter Set','Planetary Parameter Reference','System Paramet
        'Planetary Parameter Reference Publication Date'],axis=1,inplace=True)  
 #je supprime les colonnes contenant n'ayant pas des données intéressantes
 
-df.describe()
+dfa.describe()
 
-df1 = df.dropna(how='any') 
+df1 = dfa.dropna(how='any') 
 # je ne garde dans un premier temps que les lignes ayant toutes les colonnes de renseignées
 # je fais une copie et non un inplace afin de ne pas perdre la table initiale et pouvoir élargir l'échantillon considéré au besoin
 
@@ -92,31 +92,31 @@ df1.columns
 
 
 
-df.columns
+dfa.columns
 
-df.hist('Discovery Year') # donne la répartition des années de découvertes les étoiles
+dfa.hist('Discovery Year') # donne la répartition des années de découvertes les étoiles
 
 
 
 df1[['Discovery Year','Distance [pc]']]
 
-df['Stellar Effective Temperature [K]'].hist(bins=500, legend = True)
+dfa['Stellar Effective Temperature [K]'].hist(bins=500, legend = True)
 
 # +
 # trouver valeur pathologique puis l'enlever
 # -
 
-df['Stellar Effective Temperature [K]'].hist(bins=500, legend = True)
+dfa['Stellar Effective Temperature [K]'].hist(bins=500, legend = True)
 
-df['Planet Radius [Earth Radius]'].hist(bins=100, legend = True)
+dfa['Planet Radius [Earth Radius]'].hist(bins=100, legend = True)
 
-df.plot.scatter(x='Stellar Radius [Solar Radius]',y='Orbital Period [days]')
+dfa.plot.scatter(x='Stellar Radius [Solar Radius]',y='Orbital Period [days]')
 
-df.plot.scatter(x='Stellar Radius [Solar Radius]',y='Insolation Flux [Earth Flux]')
+dfa.plot.scatter(x='Stellar Radius [Solar Radius]',y='Insolation Flux [Earth Flux]')
 
-df.plot.scatter(x='Insolation Flux [Earth Flux]',y='Equilibrium Temperature [K]')
+dfa.plot.scatter(x='Insolation Flux [Earth Flux]',y='Equilibrium Temperature [K]')
 
-df.plot.scatter(x='Discovery Year',y='Distance [pc]')
+dfa.plot.scatter(x='Discovery Year',y='Distance [pc]')
 
 df.plot.scatter(x='Equilibrium Temperature [K]',y='Stellar Effective Temperature [K]')
 
