@@ -7,7 +7,7 @@
 #       format_version: '1.5'
 #       jupytext_version: 1.15.1
 #   kernelspec:
-#     display_name: Python 3
+#     display_name: Python 3 (ipykernel)
 #     language: python
 #     name: python3
 # ---
@@ -108,10 +108,29 @@ k2.drop(['Default Parameter Set','Planetary Parameter Reference','System Paramet
        'Planetary Parameter Reference Publication Date'],axis=1,inplace=True)  
 #je supprime les colonnes contenant n'ayant pas des données intéressantes
 
+df_brut = pd.read_csv("confirmed_planets.csv", skiprows = 96)
+assoc = util.get_rename_assoc("confirmed_planets.csv")
+df_brut.rename(columns=assoc, inplace=True)
+df_brut.columns
+
+cp = df_brut.drop(['Date of Last Update', 'Controversial Flag', 'Spectral Type', 'Stellar Parameter Reference',
+                  'Stellar Metallicity [dex]', 'Stellar Metallicity Upper Unc. [dex]', 'Stellar Metallicity Lower Unc. [dex]',
+                  'Stellar Metallicity Limit Flag', 'Stellar Metallicity Ratio', 'Release Date'], axis = 1)
 
 
+# Je supprime un certain nombre de colonnes dont je sais que je ne me servirai pas par la suite. Je vais ensuite créer des DataFrames qui me seront utiles par la suite.
 
-
+df_disc = cp[['Planet Name', 'Host Name', 'Number of Planets', 'Discovery Method', 'Discovery Year', 'Discovery Facility', 'Planet Radius [Earth Radius]', 'Distance [pc]'  ]]
+df_disc.rename(columns={'Discovery Year' : 'Discovery_Year'}, inplace=True)
+df_ti = cp[['Planet Name','Equilibrium Temperature [K]', 'Insolation Flux [Earth Flux]']]
+df_ti = df_ti.drop_duplicates()
+df_ti = df_ti.dropna()
+df_eff = cp[['Planet Name', 'Discovery Method']]
+df_eff = df_eff.drop_duplicates()
+group = df_eff.groupby(by = 'Discovery Method')
+df_Teq = cp[['Planet Name', 'Equilibrium Temperature [K]']]
+df_Teq = df_Teq.drop_duplicates()
+df_Teq = df_Teq.dropna()
 
 # ## Traitement des données
 
