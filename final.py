@@ -141,6 +141,25 @@ tcp.hist('Discovery Year', bins=50);
 # Ici pour les exoplanètes potentielles et effectivement trouvées par K2
 k2.hist('Discovery Year')
 
+#découverte d'exoplanètes confirmées
+X = np.sort(df_disc["Discovery_Year"].unique())
+
+# +
+Y = []
+for i in X :  #J'ai fait un for car à ce moment je n'avais pas encore trouvé la commande drop_duplicates pour 
+              #retirer les planètes qui apparaissaient en triple (chaque planète a 3 lignes identiques dans le dataframe)
+    tab = df_disc.query(f'Discovery_Year == {i}')
+    a = len(tab['Planet Name'].unique())
+    Y.append(a)
+
+plt.bar(X,Y)
+plt.title('Découvertes de planètes en fonction du temps')
+# -
+
+# On voit que les découvertes d'exoplanètes augementent dans le temps, ce qui est cohérent avec les fait que les téléscopes sont de plus en plus perfectionnés.
+
+#
+
 # #### Répartition des rayons des planètes
 
 tcp.hist('Planet Radius [Earth Radius]', bins=50);
@@ -165,6 +184,9 @@ tp['Planet Equilibrium Temperature Value [K]'].hist(bins = 100, legend = True)
 # Ici pour les exoplanètes potentielles et effectivement trouvées par K2
 k2['Equilibrium Temperature [K]'].hist(bins=500, legend = True)
 
+#température d'équilibre des exoplanètes confirmées
+df_Teq.hist(bins = 100)
+
 # #### Corrélation entre température de la planète et insolation
 
 tcp.plot.scatter(y='Equilibrium Temperature [K]', x='Insolation Flux [Earth Flux]');
@@ -174,6 +196,9 @@ tp.plot.scatter(x = 'Planet Insolation Value [Earth flux]', y = 'Planet Equilibr
 
 # Ici pour les exoplanètes potentielles et effectivement trouvées par K2
 k2.plot.scatter(x='Insolation Flux [Earth Flux]',y='Equilibrium Temperature [K]')
+
+#Pour les exoplanètes confirmées
+df_ti.plot.scatter(x='Insolation Flux [Earth Flux]', y='Equilibrium Temperature [K]')
 
 # #### Corrélation entre température de la planète et température de son étoile
 
@@ -210,16 +235,26 @@ sns.relplot(data=tcp, x='Distance [pc]', y='Stellar Radius [Solar Radius]', hue=
 
 sns.relplot(data=tcp, x='Stellar Effective Temperature [K]', hue='Insolation Flux [Earth Flux]', y='Equilibrium Temperature [K]');
 
+# #### Les méthodes de découvertes d'exoplanètes les plus efficaces
 
+#pour les exoplanètes confirmées, les techniques qui donnent le plus de résultats
+explode = [0.8, 0, 0.4, 0.8, 0, 0.2, 0.5, 0.3, 0,0,0.2]
+group.count().plot(y='Planet Name', kind='pie', figsize=(15, 15), autopct='%0.2f%%', explode = explode)
+plt.title('Moyens de découverte les plus efficaces')
 
+# On voit donc que la technique dite du Transit est largement majoritaire
 
+# #### Distance des planètes découvertes en fonction du temps
 
+Y2 = []
+for i in X : 
+    tab = df_disc.query(f'Discovery_Year == {i}')
+    group_name = tab.groupby(by = 'Planet Name')
+    a = group_name['Distance [pc]'].mean().mean()
+    Y2.append(a)
+plt.plot(X, Y2)
+plt.title('Distance moyenne entre la terre et les planètes découvertes dans l année (en pc)')
 
-
-
-
-
-
-
+# A part quelques valeurs particulières en 1992, on voit que l'on découvre des planètes de plus en plus lointaines
 
 
