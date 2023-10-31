@@ -44,6 +44,16 @@ to_drop = ['Planetary Parameter Reference', 'Stellar Parameter Reference', 'Defa
 tcp.drop(to_drop, axis=1, inplace=True)
 # -
 
+# On commence par importer les données. Ici ce sont les planètes qui ont été identifiées par le telescope TESS comme étant d'éventuelles exoplanètes, mais non prouvé
+# Ensuite on selectionne les colonnes avec des données pertinentes, et qui sont communes aux autres tables pour pouvoir comparer. L'idée est de pouvoir faire des tracés communs avec les tables qui continnent les exoplanètes prouvées pour voire si les exoplanètes éventuelles sont pertinentes
+
+tp = pd.read_csv('tess_project_candidates.csv', skiprows = 69)
+assoc = util.get_rename_assoc('tess_project_candidates.csv')
+tp.rename(columns=assoc, inplace=True)
+tp = tp[['TESS Object of Interest','TESS Input Catalog ID','RA [sexagesimal]','Dec [sexagesimal]','Planet Orbital Period Value [days]','Planet Radius Value [R_Earth]','Planet Insolation Value [Earth flux]','Planet Equilibrium Temperature Value [K]','Stellar Distance [pc]','Stellar Effective Temperature Value [K]','Stellar Radius Value [R_Sun]']]
+tp.set_index('TESS Object of Interest', inplace = True)
+tp.dropna(how = 'any', inplace = True)
+
 # ## Traitement des données
 
 
