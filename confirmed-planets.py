@@ -33,7 +33,6 @@ import matplotlib.pyplot as plt
 
 # %%
 df_brut = pd.read_csv("confirmed_planets.csv", skiprows = 96)
-
 assoc = util.get_rename_assoc("confirmed_planets.csv")
 df_brut.rename(columns=assoc, inplace=True)
 
@@ -155,6 +154,17 @@ explode = [0.8, 0, 0.4, 0.8, 0, 0.2, 0.5, 0.3, 0,0,0.2]
 group.count().plot(y='Planet Name', kind='pie', figsize=(15, 15), autopct='%0.2f%%', explode = explode)
 plt.title('Moyens de découverte les plus efficaces')
 
+# %% [markdown]
+# ### d - répartition T eq
+
 # %%
+df_Teq = df[['Planet Name', 'Equilibrium Temperature [K]']]
+
+# %%
+df_Teq = df_Teq.drop_duplicates()
+df_Teq = df_Teq.dropna()
+
+# %%
+df_Teq.hist(bins = 100)
 
 # %%
