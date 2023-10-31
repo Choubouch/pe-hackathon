@@ -118,11 +118,11 @@ dfa.plot.scatter(x='Insolation Flux [Earth Flux]',y='Equilibrium Temperature [K]
 
 dfa.plot.scatter(x='Discovery Year',y='Distance [pc]')
 
-df.plot.scatter(x='Equilibrium Temperature [K]',y='Stellar Effective Temperature [K]')
+dfa.plot.scatter(x='Equilibrium Temperature [K]',y='Stellar Effective Temperature [K]')
 
-df.plot.scatter(x='Planet Radius [Earth Radius]',y='Equilibrium Temperature [K]')
+dfa.plot.scatter(x='Planet Radius [Earth Radius]',y='Equilibrium Temperature [K]')
 
-df.plot.scatter(x='Planet Radius [Earth Radius]',y='Orbital Period [days]')
+dfa.plot.scatter(x='Planet Radius [Earth Radius]',y='Orbital Period [days]')
 
 
 
