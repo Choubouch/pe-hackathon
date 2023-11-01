@@ -7,7 +7,7 @@
 #       format_version: '1.5'
 #       jupytext_version: 1.15.1
 #   kernelspec:
-#     display_name: Python 3 (ipykernel)
+#     display_name: Python 3
 #     language: python
 #     name: python3
 # ---
@@ -23,11 +23,11 @@ import seaborn as sns
 import utility as util
 # -
 
-# Nous avons trouvé 4 bases de données à exploiter, elles contiennent les exoplanètes ou les candidats à être des exoplanètes. Deux proviennent du satellite TESS et une du satellite K2 et la dernière regroupe l'ensemble des exoplanètes confirmées
+# Nous avons trouvé 4 bases de données à exploiter. Elles contiennent les exoplanètes ou les candidats à être des exoplanètes. Deux proviennent du satellite TESS, une du satellite K2 et la dernière regroupe l'ensemble des exoplanètes confirmées.
 
 # ## Nettoyage des bases de données
 
-# Pour les exoplanètes trouvées par TESS
+# Pour les exoplanètes trouvées par TESS :
 
 # +
 tcp = pd.read_csv('tess_confirmed_planet.csv', skiprows=99)
@@ -48,21 +48,35 @@ to_drop = ['Planetary Parameter Reference', 'Stellar Parameter Reference', 'Defa
 tcp.drop(to_drop, axis=1, inplace=True)
 # -
 
-# On commence par importer les données. Ici ce sont les planètes qui ont été identifiées par le telescope TESS comme étant d'éventuelles exoplanètes, mais non prouvé
-# Ensuite on selectionne les colonnes avec des données pertinentes, et qui sont communes aux autres tables pour pouvoir comparer. L'idée est de pouvoir faire des tracés communs avec les tables qui continnent les exoplanètes prouvées pour voire si les exoplanètes éventuelles sont pertinentes
+# Pour les candidates à devenir des exoplanètes :
+#
+# Ici ce sont les planètes qui ont été identifiées par le telescope TESS comme étant d'éventuelles exoplanètes, mais non prouvé.
+#
+# On ne selectionne que les colonnes avec des données pertinentes qui sont communes aux autres tables pour pouvoir comparer. L'idée est de pouvoir faire des tracés communs avec les tables qui contiennent les exoplanètes prouvées pour voire si les exoplanètes éventuelles sont pertinentes
 
+# +
+# On commence par importer les données
 tp = pd.read_csv('tess_project_candidates.csv', skiprows = 69)
+
 assoc = util.get_rename_assoc('tess_project_candidates.csv')
 tp.rename(columns=assoc, inplace=True)
+
+# On selectionne les colonnes avec des données pertinentes et
+# qui sont communes aux autres tables pour pouvoir comparer
 tp = tp[['TESS Object of Interest','TESS Input Catalog ID','RA [sexagesimal]','Dec [sexagesimal]','Planet Orbital Period Value [days]','Planet Radius Value [R_Earth]','Planet Insolation Value [Earth flux]','Planet Equilibrium Temperature Value [K]','Stellar Distance [pc]','Stellar Effective Temperature Value [K]','Stellar Radius Value [R_Sun]']]
 tp.set_index('TESS Object of Interest', inplace = True)
 tp.dropna(how = 'any', inplace = True)
+# -
 
-Pour le satellite K2
+# Pour le satellite K2 :
 
+# +
 k2 = pd.read_csv('k2_planets_and_candidates.csv', skiprows = 98)
+
 assoc = util.get_rename_assoc('k2_planets_and_candidates.csv')
 k2.rename(columns=assoc, inplace=True)
+
+# On supprime les colonnes ne contenant pas de données intéressantes
 k2.drop(['Default Parameter Set','Planetary Parameter Reference','System Parameter Reference',
        'Archive Disposition', 'Archive Disposition Reference', 'Discovery Method', 'Discovery Facility', 'Solution Type',
        'Controversial Flag',
@@ -111,34 +125,39 @@ k2.drop(['Default Parameter Set','Planetary Parameter Reference','System Paramet
        'Ks (2MASS) Magnitude Upper Unc', 'Ks (2MASS) Magnitude Lower Unc',
        'Gaia Magnitude Upper Unc',
        'Gaia Magnitude Lower Unc',
-       'Planetary Parameter Reference Publication Date'],axis=1,inplace=True)  
-#je supprime les colonnes contenant n'ayant pas des données intéressantes
+       'Planetary Parameter Reference Publication Date'], axis=1, inplace=True)  
+# -
 
-# Pour l'ensemble des exoplanètes
+# Pour l'ensemble des exoplanètes :
 
-df_brut = pd.read_csv("confirmed_planets.csv", skiprows = 96)
+# +
+df_brut = pd.read_csv("confirmed_planets.csv", skiprows=96)
+
 assoc = util.get_rename_assoc("confirmed_planets.csv")
 df_brut.rename(columns=assoc, inplace=True)
-df_brut.columns
 
+# On supprime un certain nombre de colonnes dont on ne sait pas quoi en faire par la suite 
 cp = df_brut.drop(['Date of Last Update', 'Controversial Flag', 'Spectral Type', 'Stellar Parameter Reference',
                   'Stellar Metallicity [dex]', 'Stellar Metallicity Upper Unc. [dex]', 'Stellar Metallicity Lower Unc. [dex]',
-                  'Stellar Metallicity Limit Flag', 'Stellar Metallicity Ratio', 'Release Date'], axis = 1)
+                  'Stellar Metallicity Limit Flag', 'Stellar Metallicity Ratio', 'Release Date'], axis=1)
 
-
-# Je supprime un certain nombre de colonnes dont je sais que je ne me servirai pas par la suite. Je vais ensuite créer des DataFrames qui me seront utiles par la suite.
-
+# On crée ensuite des DataFrames qui nous seront utiles par la suite
 df_disc = cp[['Planet Name', 'Host Name', 'Number of Planets', 'Discovery Method', 'Discovery Year', 'Discovery Facility', 'Planet Radius [Earth Radius]', 'Distance [pc]'  ]]
 df_disc.rename(columns={'Discovery Year' : 'Discovery_Year'}, inplace=True)
+
 df_ti = cp[['Planet Name','Equilibrium Temperature [K]', 'Insolation Flux [Earth Flux]']]
 df_ti = df_ti.drop_duplicates()
 df_ti = df_ti.dropna()
+
 df_eff = cp[['Planet Name', 'Discovery Method']]
 df_eff = df_eff.drop_duplicates()
+
 group = df_eff.groupby(by = 'Discovery Method')
+
 df_Teq = cp[['Planet Name', 'Equilibrium Temperature [K]']]
 df_Teq = df_Teq.drop_duplicates()
 df_Teq = df_Teq.dropna()
+# -
 
 # ## Traitement des données
 
