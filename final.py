@@ -274,7 +274,8 @@ axes[1, 1].set_title("Ensemble des exoplanètes confirmées")
 fig.suptitle("Répartition des températures d'équilibre [K]", y=0.95);
 # -
 
-# # TODO : commentaires
+# Etant donné que les télescopes TESS et Keppler essayent tous deux de détecter en priorité les __planètes telluriques situées dans la zone habitable__, il est cohérent que la forme générale de l'histogramme soit la même.
+# Mais on peut aussi noter que TESS a la capacité de sélectionner des candidats avec une température d'équilibre de 3000 K. Ce qui n'est pas du tout le cas de K2. On peut donc supposer que ces planètes correspondent à des __géantes gazeuses__ (qui echappent à la détection de K2 mais pas de TESS).
 
 # ***
 
@@ -369,6 +370,14 @@ df_disc[["Discovery_Year", "Distance [pc]"]].groupby(by="Discovery_Year").mean()
 plt.title("Distance moyenne entre la terre et les planètes découvertes dans l'année (en pc)");
 
 # A part quelques valeurs particulières en 1992, on voit que l'on découvre des planètes de plus en plus lointaines
+
+
+
+
+
+
+
+
 
 
 
