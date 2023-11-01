@@ -51,4 +51,5 @@ def get_rename_assoc(file):
                 assoc[ nom_col[:-1] ] = ' '.join(l[3:]).strip()
     return assoc
 
-# %%
+# %% [markdown]
+# ***
