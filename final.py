@@ -331,7 +331,9 @@ fig.tight_layout()
 ax2.set_title("Ensemble des données");
 # -
 
-# # TODO : commentaires
+# On voit ici que la température d'équilibre varie d'une façon bien particulière selon le flux incident : en effet **la température de la planète est proportionnelle à la racine quatrième du flux incident**. Ces courbes mettent donc en évidence ce phénomène physique (c'est la **température de corps noir** ).
+#
+# On constate toutefois une séparation des séries de valeurs en deux courbes distinctes. Cela est probablement du au type de la planète : l'albédo et l'effet de serre sont en effet différents pour des planètes gazeuses et telluriques et ces paramètres rentrent en compte dans le calcul de la température de corps noir.
 
 # ***
 
@@ -349,7 +351,9 @@ k2.plot.scatter(y='Equilibrium Temperature [K]', x='Stellar Effective Temperatur
 ax.set_xlim(2000, 10000);
 # -
 
-# # TODO : commentaires
+# Comme on pouvait s'y attendre, une planète a tendance à être plus chaude lorsque son étoile est plus chaude.
+#
+# En accord avec ce qui a été dit précédemment, on constate que TESS peut mesurer des températures sur des plages plus larges, alors que K2 a une visibilité plus restreinte lorsqu'il s'agit de détecter de très hautes températures.
 
 # ***
 
