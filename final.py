@@ -7,7 +7,7 @@
 #       format_version: '1.5'
 #       jupytext_version: 1.15.1
 #   kernelspec:
-#     display_name: Python 3 (ipykernel)
+#     display_name: Python 3
 #     language: python
 #     name: python3
 # ---
@@ -222,6 +222,7 @@ fig.suptitle("Répartition des rayons des planètes\n[Unité de rayon de la Terr
 
 # On constate également qu'une grande partie des exoplanètes découvertes par TESS et K2 ont un rayon __du même ordre de grandeur__ que celui de la Terre *(entre 1 et 5 fois celui-ci)*.
 # TESS détecte cependant __beaucoup d'exoplanètes de rayon plus important__ *(10 à 15 fois celui de la Terre)*. Ceci peut s'expliquer par __sa sensibilité photométrique ou sa résolution angulaire, plus grande__, lui permettant d'observer des objets plus lointains.
+#
 # En effet, TESS a pour objectif est également de détecter des planètes telluriques __dont la taille est proche de celle de la Terre__ et qui sont situées dans une zone habitable, mais aussi des planètes __gazeuses__ géantes : ceci explique le pic d'exoplanètes potentielles.
 #
 # Kepler est un télescope spatial dont l'objectif est de découvrir des planètes telluriques et autres petits corps qui orbitent autour d'autres étoiles de notre galaxie, la Voie lactée. Il est spécifiquement conçu pour observer une région de l'espace située dans la Voie lactée afin de découvrir des __planètes de la taille de la Terre__, et non des géantes gazeuses.
@@ -276,8 +277,9 @@ axes[1, 1].set_title("Ensemble des exoplanètes confirmées")
 fig.suptitle("Répartition des températures d'équilibre [K]", y=0.95);
 # -
 
-# Etant donné que les télescopes TESS et Keppler essayent tous deux de détecter en priorité les __planètes telluriques situées dans la zone habitable__, il est cohérent que la forme générale de l'histogramme soit la même.
-# Mais on peut aussi noter que TESS a la capacité de sélectionner des candidats avec une température d'équilibre de 3000 K. Ce qui n'est pas du tout le cas de K2. On peut donc supposer que ces planètes correspondent à des __géantes gazeuses__ (qui echappent à la détection de K2 mais pas de TESS).
+# Etant donné que les télescopes TESS et Keppler essayent tous deux de détecter en priorité les planètes telluriques __situées dans la zone habitable__, il est cohérent que la forme générale de l'histogramme soit la même.
+#
+# On peut également noter que TESS a la capacité de sélectionner des candidats avec une température d'équilibre de 3000 K. Ce qui n'est pas du tout le cas de K2. On peut donc supposer que ces planètes correspondent à des __géantes gazeuses__ (qui échappent à la détection de K2 mais pas de TESS).
 
 # ***
 
@@ -318,20 +320,25 @@ fig.tight_layout()
 ax2.set_title("Ensemble des données");
 # -
 
-#
+# # TODO : commentaires
 
 # ***
 
 # #### Corrélation entre la température d'une planète et la température de son étoile
 
+# +
 # Ici pour l'ensemble des exoplanètes confirmées
-tcp.plot.scatter(y='Equilibrium Temperature [K]', x='Stellar Effective Temperature [K]');
-
+ax = tcp.plot.scatter(y='Equilibrium Temperature [K]', x='Stellar Effective Temperature [K]', color='b', label="Ensemble des exoplanètes confirmées");
 # Ici pour les exoplanètes éventuelles découvertes par TESS
-tp.plot.scatter(x = 'Stellar Effective Temperature Value [K]', y = 'Planet Equilibrium Temperature Value [K]');
-
+tp.plot.scatter(x = 'Stellar Effective Temperature Value [K]', y = 'Planet Equilibrium Temperature Value [K]', ax=ax, color='g', label="Exoplanètes éventuelles découvertes par TESS")
 # Ici pour les exoplanètes potentielles et effectivement découvertes par K2
-k2.plot.scatter(y='Equilibrium Temperature [K]', x='Stellar Effective Temperature [K]');
+k2.plot.scatter(y='Equilibrium Temperature [K]', x='Stellar Effective Temperature [K]', ax=ax, color='r', label="Exoplanètes potentielles et effectivement découvertes par K2")
+# Ici pour les ")
+
+ax.set_xlim(2000, 10000);
+# -
+
+# # TODO : commentaires
 
 # ***
 
@@ -369,12 +376,16 @@ warnings.filterwarnings('ignore')
 # Ici pour l'ensemble des exoplanètes confirmées
 sns.relplot(data=tcp, x='Distance [pc]', y='Stellar Radius [Solar Radius]', hue='Discovery Year');
 
+# On remarque ici une légère tendance, _qui n'est pas très flagrante_ : les planètes découvertes ont tendance à être de plus en plus grosses et éloignées avec les années.
+
 # ***
 
 # #### Lien entre la température d'une planètes et de son étoile en fonction de l'insolation de l'étoile
 
 # Ici pour l'ensemble des exoplanètes confirmées
 sns.relplot(data=tcp, x='Stellar Effective Temperature [K]', hue='Insolation Flux [Earth Flux]', y='Equilibrium Temperature [K]');
+
+# On remarque ici une loi physique assez logique : la température effective des planètes augmentent avec leur température d'équilibre, et plus l'insolation plus importante, plus ces deux valeurs sont élevées.
 
 # ***
 
@@ -385,9 +396,7 @@ explode = [0.8, 0, 0.4, 0.8, 0, 0.2, 0.5, 0.3, 0,0,0.2]
 df_eff.groupby(by='Discovery Method').count().plot(y='Planet Name', kind='pie', figsize=(15, 15), autopct='%0.2f%%', explode=explode)
 plt.title('Moyens de découverte les plus efficaces');
 
-df_eff.pivot_table(index='Discovery Method', aggfunc='count').head()
-
-# On voit donc que la technique dite du Transit est largement majoritaire
+# On constate donc que la technique dite du *Transit* est largement majoritaire.
 
 # ***
 
@@ -396,26 +405,4 @@ df_eff.pivot_table(index='Discovery Method', aggfunc='count').head()
 df_disc[["Discovery_Year", "Distance [pc]"]].groupby(by="Discovery_Year").mean().plot()
 plt.title("Distance moyenne entre la terre et les planètes découvertes dans l'année (en pc)");
 
-# A part quelques valeurs particulières en 1992, on voit que l'on découvre des planètes de plus en plus lointaines
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+# Mise à part quelques valeurs particulières en 1992, on voit que l'on découvre des planètes __de plus en plus lointaines__.
