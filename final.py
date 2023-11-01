@@ -18,6 +18,7 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+import matplotlib.patches as ptch
 import seaborn as sns
 
 import utility as util
@@ -31,7 +32,7 @@ import utility as util
 # > 
 # > Évidemment, lors du développement, chaque opération était séparée dans une cellule.
 
-# Pour les exoplanètes trouvées par TESS :
+# __Pour les exoplanètes trouvées par TESS :__
 
 # +
 tcp = pd.read_csv('tess_confirmed_planet.csv', skiprows=99)
@@ -50,9 +51,14 @@ tcp.set_index('Planet Name', inplace=True)
 # Retrait des colonnes inutiles
 to_drop = ['Planetary Parameter Reference', 'Stellar Parameter Reference', 'Default Parameter Set', 'Controversial Flag', 'Stellar Metallicity Ratio']
 tcp.drop(to_drop, axis=1, inplace=True)
+
+# Gestion du format de dates
+tcp["Date of Last Update"] = pd.to_datetime(tcp["Date of Last Update"], format="%Y-%m-%d")
+tcp["Planetary Parameter Reference Publication Date"] = pd.to_datetime(tcp["Planetary Parameter Reference Publication Date"], format="%Y-%m")
+tcp["Release Date"] = pd.to_datetime(tcp["Release Date"], format="%Y-%m-%d")
 # -
 
-# Pour les candidates à devenir des exoplanètes :
+# __Pour les candidates à devenir des exoplanètes :__
 #
 # Ici ce sont des objets célestes qui ont été identifiés par le telescope TESS comme étant d'éventuelles exoplanètes, mais non prouvé.
 #
@@ -72,7 +78,7 @@ tp.set_index('TESS Object of Interest', inplace = True)
 tp.dropna(how = 'any', inplace = True)
 # -
 
-# Pour le satellite K2 :
+# __Pour le satellite K2 :__
 
 # +
 k2 = pd.read_csv('k2_planets_and_candidates.csv', skiprows = 98)
@@ -129,10 +135,17 @@ k2.drop(['Default Parameter Set','Planetary Parameter Reference','System Paramet
        'Ks (2MASS) Magnitude Upper Unc', 'Ks (2MASS) Magnitude Lower Unc',
        'Gaia Magnitude Upper Unc',
        'Gaia Magnitude Lower Unc',
-       'Planetary Parameter Reference Publication Date'], axis=1, inplace=True)  
+       'Planetary Parameter Reference Publication Date'], axis=1, inplace=True)
+
+# Gestion du format de dates
+# Certaines dates incluent une heure précise ... pour simplifier, on ignore cette heure.
+k2["Release Date"] = k2["Release Date"].str.split(' ').str[0]
+
+k2["Date of Last Update"] = pd.to_datetime(k2["Date of Last Update"], format="%Y-%m-%d")
+k2["Release Date"] = pd.to_datetime(k2["Release Date"], format="%Y-%m-%d")
 # -
 
-# Pour l'ensemble des exoplanètes :
+# __Pour l'ensemble des exoplanètes :__
 
 # +
 df_brut = pd.read_csv("confirmed_planets.csv", skiprows=96)
@@ -160,30 +173,47 @@ df_Teq = cp[['Planet Name', 'Equilibrium Temperature [K]']]
 
 # #### Nombre de découvertes en fonction de l'année
 
+# +
+fig, axes = plt.subplots(1, 3, figsize=(15, 5))
+
 # Ici pour les exoplanètes découvertes par TESS
-tcp.hist('Discovery Year', bins=50);
+tcp.hist("Discovery Year", ax=axes[0])
+axes[0].set_title("Exoplanètes découvertes par TESS")
 
 # Ici pour les exoplanètes potentielles et effectivement découvertes par K2
-k2.hist('Discovery Year');
+k2.hist("Discovery Year", ax=axes[1]);
+axes[1].set_title("Exoplanètes potentielles et effectivement\n découvertes par K2")
 
 # Le satellite Keppler a été en activité de 2009 à 2013 avant de subire un disfonctionnement et d'être réactivé pour une mission moins ambitieuse sous le nom de K2 en 2014. Il sera fortement utilisé jusqu'en 2019.
 # On voit en effet que la majorité des exoplanètes découvertes l'ont été autour de 2017, alors que l'activité du télescope battait son plein.
 
 # Ici pour l'ensemble des exoplanètes confirmées
-df_disc.hist("Discovery_Year")
-plt.title('Découvertes de planètes en fonction du temps');
+df_disc.hist("Discovery_Year", ax=axes[2])
+plt.title("Ensemble des exoplanètes confirmées");
 
-# On voit que les découvertes d'exoplanètes augementent dans le temps, ce qui est cohérent avec les fait que les téléscopes sont de plus en plus perfectionnés.
+fig.suptitle("Nombre d'exoplanètes découvertes par année", y=1.05);
+# -
+
+# Les découvertes d'exoplanètes __augmentent avec le temps__, ce qui corrobore le __perfectionnement technique__ de ceux-ci avec le temps.
+#
+# On remarque cependant un pic de découvertes par le télescope K2 *(prolongation de la mission Kepler)* entre 2016 et 2018, avant une décroissance très rapide : la mission effective de ce téléscope s'est __achevée en 2019__.
+#
+# On remarque enfin qu'on découvre plus d'exoplanètes par an, qu'on en « valide » après analyse et observation plus précise.
 
 # ***
 
 # #### Répartition des rayons des planètes
 
+# +
+fig, axes = plt.subplots(1, 3, figsize=(15, 5))
+
 # Ici pour les exoplanètes découvertes par TESS
-tcp.hist('Planet Radius [Earth Radius]', bins=50);
+tcp.hist('Planet Radius [Earth Radius]', ax=axes[0], bins=50, range=[0, 25])
+axes[0].set_title("Exoplanètes découvertes par TESS")
 
 # Ici pour les exoplanètes éventuelles découvertes par TESS
-tp['Planet Radius Value [R_Earth]'].hist(bins=100, legend=True);
+tp['Planet Radius Value [R_Earth]'].hist(bins=50, ax=axes[1], range=[0, 25])
+axes[1].set_title("Exoplanètes éventuelles découvertes par TESS")
 
 # TESS a pour objectif est également de détecter des planètes telluriques dont la taille est proche de celle de la Terre et qui sont situées dans la zone habitable. Il peut également détecter des planètes gazeuses géantes. 
 
@@ -193,29 +223,65 @@ k2['Planet Radius [Earth Radius]'].hist(bins=5000, legend=True);
 # Kepler est un télescope spatial dont l'objectif est de découvrir des planètes telluriques et autres petits corps qui orbitent autour d'autres étoiles de notre galaxie, la Voie lactée13,14. L'observatoire Kepler est spécifiquement conçu pour observer une région de l'espace située dans la Voie lactée afin de découvrir des douzaines de planètes de la taille de la Terre à l'intérieur ou proches de la zone habitable et déterminer combien parmi les milliards d'étoiles de notre Galaxie ont de telles planètes.
 
 # Il est donc cohérent que la très grande majorité des exoplanètes (prouvées ou non) qui ont été détectées par K2 soient plus petites que la Terre ou bien "légèrement plus grandes" (jusqu'à 25 fois).
+k2['Planet Radius [Earth Radius]'].hist(bins=50, ax=axes[2], range=[0, 25])
+axes[2].set_title("Exoplanètes potentielles et effectivement\n découvertes par K2")
+
+fig.suptitle("Répartition des rayons des planètes\n[Unité de rayon de la Terre]", y=1.05);
+# -
+
+# # TODO : commentaires
 
 # ***
 
 # #### Répartition des masses des planètes
 
+# +
+fig, axes = plt.subplots(1, 2, figsize=(10, 5))
+
 # Ici pour les exoplanètes découvertes par TESS
-tcp.hist('Planet Mass or Mass*sin(i) [Earth Mass]', bins=50);
+mask = tcp["Planet Mass or Mass*sin(i) [Earth Mass]"] > 0
+tcp[mask].hist('Planet Mass or Mass*sin(i) [Earth Mass]', bins=100, ax=axes[0], range=[0, 1250])
+axes[0].set_title("Exoplanètes découvertes par TESS")
+
+rect = ptch.Rectangle((0, 0.5), 300, 30, fill=False, color="red", linewidth=2)
+axes[0].add_patch(rect)
+
+mask = tcp["Planet Mass or Mass*sin(i) [Earth Mass]"] > 0
+tcp[mask].hist('Planet Mass or Mass*sin(i) [Earth Mass]', bins=100, ax=axes[1], range=[0, 300])
+axes[1].set_title("Exoplanètes découvertes par TESS\n(zoom)")
+
+plt.suptitle("Répartition des masses des planètes\n[Unité de masse de la Terre]", y=1.05);
+# -
+
+# On remarque que la très grande majorité des exoplanètes découvertes ont une masse du __même ordre de grandeur__ que celle de la Terre.
 
 # ***
 
 # #### Répartition des températures d'équilibre
 
+# +
+fig, axes = plt.subplots(2, 2, figsize=(10, 10))
+
 # Ici pour les exoplanètes découvertes par TESS
-tcp.hist('Equilibrium Temperature [K]', bins=50);
+tcp.hist('Equilibrium Temperature [K]', bins=100, ax=axes[0, 0], range=[0, 3000]);
+axes[0, 0].set_title("Exoplanètes découvertes par TESS")
 
 # Ici pour les exoplanètes éventuelles découvertes par TESS
-tp['Planet Equilibrium Temperature Value [K]'].hist(bins=100, legend=True);
+tp['Planet Equilibrium Temperature Value [K]'].hist(bins=100, ax=axes[0, 1], range=[0, 3000])
+axes[0, 1].set_title("Exoplanètes éventuelles découvertes par TESS")
 
 # Ici pour les exoplanètes potentielles et effectivement découvertes par K2
-k2['Equilibrium Temperature [K]'].hist(bins=500, legend=True);
+k2['Equilibrium Temperature [K]'].hist(bins=100, ax=axes[1, 0], range=[0, 3000]);
+axes[1, 0].set_title("Exoplanètes potentielles et effectivement\n découvertes par K2")
 
 # Ici pour l'ensemble des exoplanètes confirmées
-df_Teq.hist(bins=100);
+df_Teq.hist(bins=100, ax=axes[1,1], range=[0, 3000]);
+axes[1, 1].set_title("Ensemble des exoplanètes confirmées")
+
+fig.suptitle("Répartition des températures d'équilibre [K]", y=0.95);
+# -
+
+# # TODO : commentaires
 
 # ***
 
@@ -275,6 +341,10 @@ k2.plot.scatter(y='Planet Radius [Earth Radius]',x='Equilibrium Temperature [K]'
 
 # #### Lien entre le rayon d'une planète et sa température d'équilibre en fonction de l'année
 
+# On retire les warnings disgracieux provoqués par seaborn
+import warnings
+warnings.filterwarnings('ignore')
+
 # Ici pour l'ensemble des exoplanètes confirmées
 sns.relplot(data=tcp, x='Distance [pc]', y='Stellar Radius [Solar Radius]', hue='Discovery Year');
 
@@ -291,8 +361,10 @@ sns.relplot(data=tcp, x='Stellar Effective Temperature [K]', hue='Insolation Flu
 
 # Ici pour l'ensemble des exoplanètes confirmées
 explode = [0.8, 0, 0.4, 0.8, 0, 0.2, 0.5, 0.3, 0,0,0.2]
-group.count().plot(y='Planet Name', kind='pie', figsize=(15, 15), autopct='%0.2f%%', explode = explode)
+df_eff.groupby(by='Discovery Method').count().plot(y='Planet Name', kind='pie', figsize=(15, 15), autopct='%0.2f%%', explode=explode)
 plt.title('Moyens de découverte les plus efficaces');
+
+df_eff.pivot_table(index='Discovery Method', aggfunc='count').head()
 
 # On voit donc que la technique dite du Transit est largement majoritaire
 
@@ -300,15 +372,8 @@ plt.title('Moyens de découverte les plus efficaces');
 
 # #### Évolution de notre distance aux planètes découvertes en fonction du temps
 
-X = np.sort(df_disc["Discovery_Year"].unique())
-Y2 = []
-for i in X : 
-    tab = df_disc.query(f'Discovery_Year == {i}')
-    group_name = tab.groupby(by = 'Planet Name')
-    a = group_name['Distance [pc]'].mean().mean()
-    Y2.append(a)
-plt.plot(X, Y2)
-plt.title('Distance moyenne entre la terre et les planètes découvertes dans l année (en pc)');
+df_disc[["Discovery_Year", "Distance [pc]"]].groupby(by="Discovery_Year").mean().plot()
+plt.title("Distance moyenne entre la terre et les planètes découvertes dans l'année (en pc)");
 
 # A part quelques valeurs particulières en 1992, on voit que l'on découvre des planètes de plus en plus lointaines
 
