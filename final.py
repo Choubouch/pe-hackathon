@@ -7,7 +7,7 @@
 #       format_version: '1.5'
 #       jupytext_version: 1.15.1
 #   kernelspec:
-#     display_name: Python 3
+#     display_name: Python 3 (ipykernel)
 #     language: python
 #     name: python3
 # ---
@@ -147,6 +147,9 @@ k2["Release Date"] = pd.to_datetime(k2["Release Date"], format="%Y-%m-%d")
 
 # __Pour l'ensemble des exoplanètes :__
 
+# La table étudiée ici rassemble les exoplanètes confirmées : elle englobe donc les observations des telescopes K2, TESS, Kepler. On peut y trouver de nombreuses informations sur les planètes qui peuvent d'ailleurs être de tout type : certaines ont plusieurs étoiles, d'autres n'en ont pas... 
+# Comme certaines informations sont inutiles, je commence par en enlever quelques unes, puis je crée des sous tables qui seront utiles pour réaliser des graphiques.
+
 # +
 df_brut = pd.read_csv("confirmed_planets.csv", skiprows=96)
 
@@ -159,14 +162,20 @@ cp = df_brut.drop(['Date of Last Update', 'Controversial Flag', 'Spectral Type',
                   'Stellar Metallicity Limit Flag', 'Stellar Metallicity Ratio', 'Release Date'], axis=1)
 cp.rename(columns={'Discovery Year' : 'Discovery_Year'}, inplace=True)
 cp.drop_duplicates(inplace=True)
-cp.dropna(inplace=True)
 
 # On crée ensuite des DataFrames qui nous seront utiles par la suite
 df_disc = cp[['Planet Name', 'Host Name', 'Number of Planets', 'Discovery Method', 'Discovery_Year', 'Discovery Facility', 'Planet Radius [Earth Radius]', 'Distance [pc]'  ]]
+df_disc.drop_duplicates(inplace=True)
 df_ti = cp[['Planet Name','Equilibrium Temperature [K]', 'Insolation Flux [Earth Flux]']]
+df_ti.dropna(inplace=True)
+df_ti.drop_duplicates(inplace=True)
 df_eff = cp[['Planet Name', 'Discovery Method']]
+df_eff.dropna(inplace=True)
+df_eff.drop_duplicates(inplace=True)
 group = df_eff.groupby(by = 'Discovery Method')
 df_Teq = cp[['Planet Name', 'Equilibrium Temperature [K]']]
+df_Teq.dropna(inplace=True)
+df_Teq.drop_duplicates(inplace=True)
 # -
 
 # ## Traitement des données
@@ -250,6 +259,8 @@ plt.suptitle("Répartition des masses des planètes\n[Unité de masse de la Terr
 # -
 
 # On remarque que la très grande majorité des exoplanètes découvertes ont une masse du __même ordre de grandeur__ que celle de la Terre.
+#
+# Il faut noter que la plupart des planètes ayant une très grande masse devant celle de la Terre (environ 1 000 fois la masse terrestre) sont des géantes gazeuses, où la vie a moins de chances de se développer. Donc heureusement que celles-ci représentent une part minoritaire des planètes trouvées !
 
 # ***
 
@@ -392,11 +403,16 @@ sns.relplot(data=tcp, x='Stellar Effective Temperature [K]', hue='Insolation Flu
 # #### Efficacité des méthodes de découverte d'exoplanètes
 
 # Ici pour l'ensemble des exoplanètes confirmées
+df_eff = df_eff.drop_duplicates()
 explode = [0.8, 0, 0.4, 0.8, 0, 0.2, 0.5, 0.3, 0,0,0.2]
-df_eff.groupby(by='Discovery Method').count().plot(y='Planet Name', kind='pie', figsize=(15, 15), autopct='%0.2f%%', explode=explode)
+df_eff.groupby(by='Discovery Method').count().plot(y='Planet Name', kind='pie', figsize=(15, 10), autopct='%0.2f%%', explode=explode)
 plt.title('Moyens de découverte les plus efficaces');
 
-# On constate donc que la technique dite du *Transit* est largement majoritaire.
+# On constate donc que la technique dite du *Transit* est largement majoritaire. C'est en effet la méthode la plus intuitive qui consiste à repérer la planète par une diminution de la luminosité reçue de l'étoile lorsque la planète passe entre la Terre et l'étoile.
+#
+# La seconde méthode *Radial Velocity* permet de détecter une planète en observant les mouvements de l'étoile autour de laquelle elle orbite : la planète, par son attraction gravitationnelle sur l'étoile, lui fait décrire des petits cercles que l'on peut détecter.
+#
+# On remarque que dans les deux cas, on détecte la planète grâce à l'étoile, ce qui est logique puisque celle-ci est beaucoup plus lumineuse et donc visible depuis la Terre.
 
 # ***
 
@@ -406,3 +422,7 @@ df_disc[["Discovery_Year", "Distance [pc]"]].groupby(by="Discovery_Year").mean()
 plt.title("Distance moyenne entre la terre et les planètes découvertes dans l'année (en pc)");
 
 # Mise à part quelques valeurs particulières en 1992, on voit que l'on découvre des planètes __de plus en plus lointaines__.
+
+
+
+
