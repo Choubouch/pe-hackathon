@@ -218,7 +218,9 @@ axes[2].set_title("Exoplanètes potentielles et effectivement\n découvertes par
 fig.suptitle("Répartition des rayons des planètes\n[Unité de rayon de la Terre]", y=1.05);
 # -
 
-# # TODO : commentaires
+# On constate également qu'une grande partie des exoplanètes découvertes par TESS et K2 ont un rayon __du même ordre de grandeur__ que celui de la Terre *(entre 1 et 5 fois celui-ci)*.
+#
+# TESS détecte cependant __beaucoup d'exoplanètes de rayon plus important__ *(10 à 15 fois celui de la Terre)*. Ceci peut s'expliquer par __sa sensibilité photométrique ou sa résolution angulaire, plus grande__, lui permettant d'observer des objets plus lointains.
 
 # ***
 
@@ -276,17 +278,42 @@ fig.suptitle("Répartition des températures d'équilibre [K]", y=0.95);
 
 # #### Corrélation entre le température d'une planète et son insolation
 
+# +
+fig = plt.figure(figsize=(16, 8))
+fig.suptitle("Corrélation entre température et insolation [K]")
+subfigs = fig.subfigures(1, 2)
+
+axes = subfigs[0].subplots(2, 2)
+
 # Ici pour les exoplanètes découvertes par TESS
-tcp.plot.scatter(x='Insolation Flux [Earth Flux]', y='Equilibrium Temperature [K]');
+tcp.plot.scatter(x='Insolation Flux [Earth Flux]', y='Equilibrium Temperature [K]', color='b', ax=axes[0][0]);
+axes[0][0].set_title("Exoplanètes découvertes par TESS");
 
 # Ici pour les exoplanètes éventuelles découvertes par TESS
-tp.plot.scatter(x='Planet Insolation Value [Earth flux]', y='Planet Equilibrium Temperature Value [K]');
+tp.plot.scatter(x='Planet Insolation Value [Earth flux]', y='Planet Equilibrium Temperature Value [K]', color='g', ax=axes[0][1])
+axes[0][1].set_title("Exoplanètes éventuelles découvertes par TESS");
 
 # Ici pour les exoplanètes potentielles et effectivement découvertes par K2
-k2.plot.scatter(x='Insolation Flux [Earth Flux]', y='Equilibrium Temperature [K]');
+k2.plot.scatter(x='Insolation Flux [Earth Flux]', y='Equilibrium Temperature [K]', color='orange', ax=axes[1][0])
+axes[1][0].set_title("Exoplanètes potentielles et effectivement\n découvertes par K2");
 
 # Ici pour l'ensemble des exoplanètes confirmées
-df_ti.plot.scatter(x='Insolation Flux [Earth Flux]', y='Equilibrium Temperature [K]');
+df_ti.plot.scatter(x='Insolation Flux [Earth Flux]', y='Equilibrium Temperature [K]', color='r', ax=axes[1][1])
+axes[1][1].set_title("Ensemble des exoplanètes confirmées");
+
+# Toutes sur un même graphe
+ax2 = subfigs[1].subplots(1, 1)
+
+tcp.plot.scatter(x='Insolation Flux [Earth Flux]', y='Equilibrium Temperature [K]', color='b', ax=ax2)
+tp.plot.scatter(x='Planet Insolation Value [Earth flux]', y='Planet Equilibrium Temperature Value [K]', color='g', ax=ax2)
+k2.plot.scatter(x='Insolation Flux [Earth Flux]', y='Equilibrium Temperature [K]', color='orange', ax=ax2)
+df_ti.plot.scatter(x='Insolation Flux [Earth Flux]', y='Equilibrium Temperature [K]', color='r', ax=ax2)
+
+fig.tight_layout()
+ax2.set_title("Ensemble des données");
+# -
+
+#
 
 # ***
 
