@@ -7,7 +7,7 @@
 #       format_version: '1.5'
 #       jupytext_version: 1.15.1
 #   kernelspec:
-#     display_name: Python 3
+#     display_name: Python 3 (ipykernel)
 #     language: python
 #     name: python3
 # ---
@@ -24,7 +24,8 @@ import seaborn as sns
 import utility as util
 # -
 
-# Nous avons trouvé 4 bases de données à exploiter. Elles contiennent les exoplanètes ou les candidats à être des exoplanètes. Deux proviennent du satellite TESS, une du satellite K2 et la dernière regroupe l'ensemble des exoplanètes confirmées.
+# Une exoplanète est une planète d'un système autre que le système solaire.
+# Nous avons trouvé 4 bases de données à exploiter. Elles contiennent les exoplanètes ou les candidats à être des exoplanètes. Deux proviennent du satellite TESS, une du satellite K2 et la dernière regroupe l'ensemble des exoplanètes confirmées. 
 
 # ## Nettoyage des bases de données
 # > Pour faciliter la lecture, on n'utilisera qu'une seule cellule par base de données à nettoyer.
@@ -59,7 +60,7 @@ tcp["Release Date"] = pd.to_datetime(tcp["Release Date"], format="%Y-%m-%d")
 
 # __Pour les candidates à devenir des exoplanètes :__
 #
-# Ici ce sont les planètes qui ont été identifiées par le telescope TESS comme étant d'éventuelles exoplanètes, mais non prouvé.
+# Ici ce sont des objets célestes qui ont été identifiés par le telescope TESS comme étant d'éventuelles exoplanètes, mais non prouvé.
 #
 # On ne selectionne que les colonnes avec des données pertinentes qui sont communes aux autres tables pour pouvoir comparer. L'idée est de pouvoir faire des tracés communs avec les tables qui contiennent les exoplanètes prouvées pour voire si les exoplanètes éventuelles sont pertinentes
 
@@ -212,6 +213,7 @@ tp['Planet Radius Value [R_Earth]'].hist(bins=50, ax=axes[1], range=[0, 25])
 axes[1].set_title("Exoplanètes éventuelles découvertes par TESS")
 
 # Ici pour les exoplanètes potentielles et effectivement découvertes par K2
+
 k2['Planet Radius [Earth Radius]'].hist(bins=50, ax=axes[2], range=[0, 25])
 axes[2].set_title("Exoplanètes potentielles et effectivement\n découvertes par K2")
 
@@ -219,8 +221,10 @@ fig.suptitle("Répartition des rayons des planètes\n[Unité de rayon de la Terr
 # -
 
 # On constate également qu'une grande partie des exoplanètes découvertes par TESS et K2 ont un rayon __du même ordre de grandeur__ que celui de la Terre *(entre 1 et 5 fois celui-ci)*.
-#
 # TESS détecte cependant __beaucoup d'exoplanètes de rayon plus important__ *(10 à 15 fois celui de la Terre)*. Ceci peut s'expliquer par __sa sensibilité photométrique ou sa résolution angulaire, plus grande__, lui permettant d'observer des objets plus lointains.
+# En effet, TESS a pour objectif est également de détecter des planètes telluriques __dont la taille est proche de celle de la Terre__ et qui sont situées dans une zone habitable, mais aussi des planètes __gazeuses__ géantes : ceci explique le pic d'exoplanètes potentielles.
+#
+# Kepler est un télescope spatial dont l'objectif est de découvrir des planètes telluriques et autres petits corps qui orbitent autour d'autres étoiles de notre galaxie, la Voie lactée. Il est spécifiquement conçu pour observer une région de l'espace située dans la Voie lactée afin de découvrir des __planètes de la taille de la Terre__, et non des géantes gazeuses.
 
 # ***
 
@@ -326,20 +330,20 @@ tcp.plot.scatter(y='Equilibrium Temperature [K]', x='Stellar Effective Temperatu
 tp.plot.scatter(x = 'Stellar Effective Temperature Value [K]', y = 'Planet Equilibrium Temperature Value [K]');
 
 # Ici pour les exoplanètes potentielles et effectivement découvertes par K2
-k2.plot.scatter(x='Insolation Flux [Earth Flux]',y='Equilibrium Temperature [K]');
+k2.plot.scatter(y='Equilibrium Temperature [K]', x='Stellar Effective Temperature [K]');
 
 # ***
 
 # #### Corrélation entre la période de rotation d'une planète et son rayon
 
 # Ici pour l'ensemble des exoplanètes confirmées
-tcp.plot.scatter(y='Orbital Period [days]', x='Planet Radius [Earth Radius]');
+tcp.plot.scatter(x='Orbital Period [days]', y='Planet Radius [Earth Radius]');
 
 # Ici pour les exoplanètes éventuelles découvertes par TESS
-tp.plot.scatter(x = 'Planet Orbital Period Value [days]', y = 'Planet Radius Value [R_Earth]');
+tp.plot.scatter(x='Planet Orbital Period Value [days]', y='Planet Radius Value [R_Earth]');
 
-# Ici pour les exoplanètes potentielles et effectivement découvertes par K2
-k2.plot.scatter(y='Planet Radius [Earth Radius]',x='Orbital Period [days]');
+# __TESS__ a pour but de rechercher les planètes ayant une __période orbitale__ allant jusqu'à __120 jours__ et de __taille proche de celle de la terre__.
+# Objectifs que l'on aurait pu déduire des graphes ci-dessus car parmi la multitude d'exoplanètes potentielles, la majorité des petits astres avec de petites périodes orbitales se révèlent effectivement être des exoplanètes. Le satellite est donc très fiable pour repérer des planètes correspondant à ces critères.
 
 # ***
 
@@ -350,6 +354,8 @@ tcp.plot.scatter(x='Equilibrium Temperature [K]', y='Planet Radius [Earth Radius
 
 # Ici pour les exoplanètes potentielles et effectivement découvertes par K2
 k2.plot.scatter(y='Planet Radius [Earth Radius]',x='Equilibrium Temperature [K]');
+
+# On voit ici encore que __K2 ne permet pas de détecter des planètes aussi grandes que celles détectées par TESS__. Mais les températures des planètes ressencées sont du même ordre de grandeur.
 
 # ***
 
@@ -390,3 +396,17 @@ df_disc[["Discovery_Year", "Distance [pc]"]].groupby(by="Discovery_Year").mean()
 plt.title("Distance moyenne entre la terre et les planètes découvertes dans l'année (en pc)");
 
 # A part quelques valeurs particulières en 1992, on voit que l'on découvre des planètes de plus en plus lointaines
+
+
+
+
+
+
+
+
+
+
+
+
+
+
