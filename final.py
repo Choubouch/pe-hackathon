@@ -143,49 +143,31 @@ df_brut.rename(columns=assoc, inplace=True)
 cp = df_brut.drop(['Date of Last Update', 'Controversial Flag', 'Spectral Type', 'Stellar Parameter Reference',
                   'Stellar Metallicity [dex]', 'Stellar Metallicity Upper Unc. [dex]', 'Stellar Metallicity Lower Unc. [dex]',
                   'Stellar Metallicity Limit Flag', 'Stellar Metallicity Ratio', 'Release Date'], axis=1)
+cp.rename(columns={'Discovery Year' : 'Discovery_Year'}, inplace=True)
+cp.drop_duplicates(inplace=True)
+cp.dropna(inplace=True)
 
 # On crée ensuite des DataFrames qui nous seront utiles par la suite
-df_disc = cp[['Planet Name', 'Host Name', 'Number of Planets', 'Discovery Method', 'Discovery Year', 'Discovery Facility', 'Planet Radius [Earth Radius]', 'Distance [pc]'  ]]
-df_disc.rename(columns={'Discovery Year' : 'Discovery_Year'}, inplace=True)
-
+df_disc = cp[['Planet Name', 'Host Name', 'Number of Planets', 'Discovery Method', 'Discovery_Year', 'Discovery Facility', 'Planet Radius [Earth Radius]', 'Distance [pc]'  ]]
 df_ti = cp[['Planet Name','Equilibrium Temperature [K]', 'Insolation Flux [Earth Flux]']]
-df_ti = df_ti.drop_duplicates()
-df_ti = df_ti.dropna()
-
 df_eff = cp[['Planet Name', 'Discovery Method']]
-df_eff = df_eff.drop_duplicates()
-
 group = df_eff.groupby(by = 'Discovery Method')
-
 df_Teq = cp[['Planet Name', 'Equilibrium Temperature [K]']]
-df_Teq = df_Teq.drop_duplicates()
-df_Teq = df_Teq.dropna()
 # -
 
 # ## Traitement des données
 
 # #### Nombre de découvertes en fonction de l'année
 
-# Ici pour les exoplanètes trouvées par TESS
+# Ici pour les exoplanètes découvertes par TESS
 tcp.hist('Discovery Year', bins=50);
 
-# Ici pour les exoplanètes potentielles et effectivement trouvées par K2
-k2.hist('Discovery Year')
+# Ici pour les exoplanètes potentielles et effectivement découvertes par K2
+k2.hist('Discovery Year');
 
-#découverte d'exoplanètes confirmées
-X = np.sort(df_disc["Discovery_Year"].unique())
-
-# +
-Y = []
-for i in X :  #J'ai fait un for car à ce moment je n'avais pas encore trouvé la commande drop_duplicates pour 
-              #retirer les planètes qui apparaissaient en triple (chaque planète a 3 lignes identiques dans le dataframe)
-    tab = df_disc.query(f'Discovery_Year == {i}')
-    a = len(tab['Planet Name'].unique())
-    Y.append(a)
-
-plt.bar(X,Y)
-plt.title('Découvertes de planètes en fonction du temps')
-# -
+# Ici pour l'ensemble des exoplanètes confirmées
+df_disc.hist("Discovery_Year")
+plt.title('Découvertes de planètes en fonction du temps');
 
 # On voit que les découvertes d'exoplanètes augementent dans le temps, ce qui est cohérent avec les fait que les téléscopes sont de plus en plus perfectionnés.
 
@@ -193,112 +175,112 @@ plt.title('Découvertes de planètes en fonction du temps')
 
 # #### Répartition des rayons des planètes
 
-# Ici pour les exoplanètes trouvées par TESS
+# Ici pour les exoplanètes découvertes par TESS
 tcp.hist('Planet Radius [Earth Radius]', bins=50);
 
-# Ici pour les exoplanètes éventuelles trouvées par TESS
-tp['Planet Radius Value [R_Earth]'].hist(bins = 100, legend = True)
+# Ici pour les exoplanètes éventuelles découvertes par TESS
+tp['Planet Radius Value [R_Earth]'].hist(bins=100, legend=True);
 
-# Ici pour les exoplanètes potentielles et effectivement trouvées par K2
-k2['Planet Radius [Earth Radius]'].hist(bins=100, legend = True)
+# Ici pour les exoplanètes potentielles et effectivement découvertes par K2
+k2['Planet Radius [Earth Radius]'].hist(bins=100, legend=True);
 
 # ***
 
 # #### Répartition des masses des planètes
 
-# Ici pour les exoplanètes trouvées par TESS
+# Ici pour les exoplanètes découvertes par TESS
 tcp.hist('Planet Mass or Mass*sin(i) [Earth Mass]', bins=50);
 
 # ***
 
 # #### Répartition des températures d'équilibre
 
-# Ici pour les exoplanètes trouvées par TESS
+# Ici pour les exoplanètes découvertes par TESS
 tcp.hist('Equilibrium Temperature [K]', bins=50);
 
-# Ici pour les exoplanètes éventuelles trouvées par TESS
-tp['Planet Equilibrium Temperature Value [K]'].hist(bins = 100, legend = True)
+# Ici pour les exoplanètes éventuelles découvertes par TESS
+tp['Planet Equilibrium Temperature Value [K]'].hist(bins=100, legend=True);
 
-# Ici pour les exoplanètes potentielles et effectivement trouvées par K2
-k2['Equilibrium Temperature [K]'].hist(bins=500, legend = True)
+# Ici pour les exoplanètes potentielles et effectivement découvertes par K2
+k2['Equilibrium Temperature [K]'].hist(bins=500, legend=True);
 
-#température d'équilibre des exoplanètes confirmées
-df_Teq.hist(bins = 100)
+# Ici pour l'ensemble des exoplanètes confirmées
+df_Teq.hist(bins=100);
 
 # ***
 
 # #### Corrélation entre le température d'une planète et son insolation
 
-# Ici pour les exoplanètes trouvées par TESS
-tcp.plot.scatter(y='Equilibrium Temperature [K]', x='Insolation Flux [Earth Flux]');
+# Ici pour les exoplanètes découvertes par TESS
+tcp.plot.scatter(x='Insolation Flux [Earth Flux]', y='Equilibrium Temperature [K]');
 
-# Ici pour les exoplanètes éventuelles trouvées par TESS
-tp.plot.scatter(x = 'Planet Insolation Value [Earth flux]', y = 'Planet Equilibrium Temperature Value [K]')
+# Ici pour les exoplanètes éventuelles découvertes par TESS
+tp.plot.scatter(x='Planet Insolation Value [Earth flux]', y='Planet Equilibrium Temperature Value [K]');
 
-# Ici pour les exoplanètes potentielles et effectivement trouvées par K2
-k2.plot.scatter(x='Insolation Flux [Earth Flux]',y='Equilibrium Temperature [K]')
+# Ici pour les exoplanètes potentielles et effectivement découvertes par K2
+k2.plot.scatter(x='Insolation Flux [Earth Flux]', y='Equilibrium Temperature [K]');
 
-#Pour les exoplanètes confirmées
-df_ti.plot.scatter(x='Insolation Flux [Earth Flux]', y='Equilibrium Temperature [K]')
+# Ici pour l'ensemble des exoplanètes confirmées
+df_ti.plot.scatter(x='Insolation Flux [Earth Flux]', y='Equilibrium Temperature [K]');
 
 # ***
 
 # #### Corrélation entre la température d'une planète et la température de son étoile
 
-#Pour les exoplanètes confirmées
+# Ici pour l'ensemble des exoplanètes confirmées
 tcp.plot.scatter(y='Equilibrium Temperature [K]', x='Stellar Effective Temperature [K]');
 
-# Ici pour les exoplanètes éventuelles trouvées par TESS
-tp.plot.scatter(x = 'Stellar Effective Temperature Value [K]', y = 'Planet Equilibrium Temperature Value [K]')
+# Ici pour les exoplanètes éventuelles découvertes par TESS
+tp.plot.scatter(x = 'Stellar Effective Temperature Value [K]', y = 'Planet Equilibrium Temperature Value [K]');
 
-# Ici pour les exoplanètes potentielles et effectivement trouvées par K2
-k2.plot.scatter(x='Insolation Flux [Earth Flux]',y='Equilibrium Temperature [K]')
+# Ici pour les exoplanètes potentielles et effectivement découvertes par K2
+k2.plot.scatter(x='Insolation Flux [Earth Flux]',y='Equilibrium Temperature [K]');
 
 # ***
 
 # #### Corrélation entre la période de rotation d'une planète et son rayon
 
-#Pour les exoplanètes confirmées
+# Ici pour l'ensemble des exoplanètes confirmées
 tcp.plot.scatter(y='Orbital Period [days]', x='Planet Radius [Earth Radius]');
 
-# Ici pour les exoplanètes éventuelles trouvées par TESS
-tp.plot.scatter(x = 'Planet Orbital Period Value [days]', y = 'Planet Radius Value [R_Earth]')
+# Ici pour les exoplanètes éventuelles découvertes par TESS
+tp.plot.scatter(x = 'Planet Orbital Period Value [days]', y = 'Planet Radius Value [R_Earth]');
 
-# Ici pour les exoplanètes potentielles et effectivement trouvées par K2
-k2.plot.scatter(y='Planet Radius [Earth Radius]',x='Orbital Period [days]')
+# Ici pour les exoplanètes potentielles et effectivement découvertes par K2
+k2.plot.scatter(y='Planet Radius [Earth Radius]',x='Orbital Period [days]');
 
 # ***
 
 # #### Corrélation entre le rayon d'une planète et sa température d'équilibre
 
-#Pour les exoplanètes confirmées
+# Ici pour l'ensemble des exoplanètes confirmées
 tcp.plot.scatter(x='Equilibrium Temperature [K]', y='Planet Radius [Earth Radius]');
 
-# Ici pour les exoplanètes potentielles et effectivement trouvées par K2
-k2.plot.scatter(y='Planet Radius [Earth Radius]',x='Equilibrium Temperature [K]')
+# Ici pour les exoplanètes potentielles et effectivement découvertes par K2
+k2.plot.scatter(y='Planet Radius [Earth Radius]',x='Equilibrium Temperature [K]');
 
 # ***
 
 # #### Lien entre le rayon d'une planète et sa température d'équilibre en fonction de l'année
 
-#Pour les exoplanètes confirmées
+# Ici pour l'ensemble des exoplanètes confirmées
 sns.relplot(data=tcp, x='Distance [pc]', y='Stellar Radius [Solar Radius]', hue='Discovery Year');
 
 # ***
 
 # #### Lien entre la température d'une planètes et de son étoile en fonction de l'insolation de l'étoile
 
-#Pour les exoplanètes confirmées
+# Ici pour l'ensemble des exoplanètes confirmées
 sns.relplot(data=tcp, x='Stellar Effective Temperature [K]', hue='Insolation Flux [Earth Flux]', y='Equilibrium Temperature [K]');
 
 # ***
 
 # #### Efficacité des méthodes de découverte d'exoplanètes
 
-#pour les exoplanètes confirmées, les techniques qui donnent le plus de résultats
+# Ici pour l'ensemble des exoplanètes confirmées
 explode = [0.8, 0, 0.4, 0.8, 0, 0.2, 0.5, 0.3, 0,0,0.2]
 group.count().plot(y='Planet Name', kind='pie', figsize=(15, 15), autopct='%0.2f%%', explode = explode)
-plt.title('Moyens de découverte les plus efficaces')
+plt.title('Moyens de découverte les plus efficaces');
 
 # On voit donc que la technique dite du Transit est largement majoritaire
 
@@ -306,6 +288,7 @@ plt.title('Moyens de découverte les plus efficaces')
 
 # #### Évolution de notre distance aux planètes découvertes en fonction du temps
 
+X = np.sort(df_disc["Discovery_Year"].unique())
 Y2 = []
 for i in X : 
     tab = df_disc.query(f'Discovery_Year == {i}')
@@ -313,6 +296,6 @@ for i in X :
     a = group_name['Distance [pc]'].mean().mean()
     Y2.append(a)
 plt.plot(X, Y2)
-plt.title('Distance moyenne entre la terre et les planètes découvertes dans l année (en pc)')
+plt.title('Distance moyenne entre la terre et les planètes découvertes dans l année (en pc)');
 
 # A part quelques valeurs particulières en 1992, on voit que l'on découvre des planètes de plus en plus lointaines
