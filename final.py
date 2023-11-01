@@ -184,9 +184,6 @@ axes[0].set_title("Exoplanètes découvertes par TESS")
 k2.hist("Discovery Year", ax=axes[1]);
 axes[1].set_title("Exoplanètes potentielles et effectivement\n découvertes par K2")
 
-# Le satellite Keppler a été en activité de 2009 à 2013 avant de subire un disfonctionnement et d'être réactivé pour une mission moins ambitieuse sous le nom de K2 en 2014. Il sera fortement utilisé jusqu'en 2019.
-# On voit en effet que la majorité des exoplanètes découvertes l'ont été autour de 2017, alors que l'activité du télescope battait son plein.
-
 # Ici pour l'ensemble des exoplanètes confirmées
 df_disc.hist("Discovery_Year", ax=axes[2])
 plt.title("Ensemble des exoplanètes confirmées");
@@ -215,21 +212,17 @@ axes[0].set_title("Exoplanètes découvertes par TESS")
 tp['Planet Radius Value [R_Earth]'].hist(bins=50, ax=axes[1], range=[0, 25])
 axes[1].set_title("Exoplanètes éventuelles découvertes par TESS")
 
-# TESS a pour objectif est également de détecter des planètes telluriques dont la taille est proche de celle de la Terre et qui sont situées dans la zone habitable. Il peut également détecter des planètes gazeuses géantes. 
-
 # Ici pour les exoplanètes potentielles et effectivement découvertes par K2
-k2['Planet Radius [Earth Radius]'].hist(bins=5000, legend=True);
 
-# Kepler est un télescope spatial dont l'objectif est de découvrir des planètes telluriques et autres petits corps qui orbitent autour d'autres étoiles de notre galaxie, la Voie lactée13,14. L'observatoire Kepler est spécifiquement conçu pour observer une région de l'espace située dans la Voie lactée afin de découvrir des douzaines de planètes de la taille de la Terre à l'intérieur ou proches de la zone habitable et déterminer combien parmi les milliards d'étoiles de notre Galaxie ont de telles planètes.
-
-# Il est donc cohérent que la très grande majorité des exoplanètes (prouvées ou non) qui ont été détectées par K2 soient plus petites que la Terre ou bien "légèrement plus grandes" (jusqu'à 25 fois).
 k2['Planet Radius [Earth Radius]'].hist(bins=50, ax=axes[2], range=[0, 25])
 axes[2].set_title("Exoplanètes potentielles et effectivement\n découvertes par K2")
 
 fig.suptitle("Répartition des rayons des planètes\n[Unité de rayon de la Terre]", y=1.05);
 # -
 
-# # TODO : commentaires
+# __TESS__ a pour objectif est également de détecter des __planètes telluriques dont la taille est proche de celle de la Terre__ et qui sont situées dans la zone habitable. Il peut également détecter des __planètes gazeuses géantes__. Ce qui explique le pic d'exoplanètes potentielles au niveau des planètes 25 fois plus grandes que la Terre (pic inexistant du côté de K2).
+#
+# __Kepler__ est un télescope spatial dont l'objectif est de découvrir des planètes telluriques et autres petits corps qui orbitent autour d'autres étoiles de notre galaxie, la Voie lactée13,14. L'observatoire Kepler est spécifiquement conçu pour observer une région de l'espace située dans la Voie lactée afin de découvrir des douzaines de __planètes de la taille de la Terre__ et non des géantes gazeuses.
 
 # ***
 
@@ -322,8 +315,8 @@ tcp.plot.scatter(x='Orbital Period [days]', y='Planet Radius [Earth Radius]');
 # Ici pour les exoplanètes éventuelles découvertes par TESS
 tp.plot.scatter(x='Planet Orbital Period Value [days]', y='Planet Radius Value [R_Earth]');
 
-# TESS a pour but de rechercher les planètes ayant une période orbitale allant jusqu'à 120 jours et de taille proche de celle de la terre.
-# Objectifs que l'on aurait pu déduire des graphes ci-dessus car parmi la multitude d'exoplanètes potentielles, la majorité des petits astres avec de petites périodes orbitales se révèlent effectivement être des exoplanètes.
+# __TESS__ a pour but de rechercher les planètes ayant une __période orbitale__ allant jusqu'à __120 jours__ et de __taille proche de celle de la terre__.
+# Objectifs que l'on aurait pu déduire des graphes ci-dessus car parmi la multitude d'exoplanètes potentielles, la majorité des petits astres avec de petites périodes orbitales se révèlent effectivement être des exoplanètes. Le satellite est donc très fiable pour repérer des planètes correspondant à ces critères.
 
 # ***
 
@@ -335,7 +328,7 @@ tcp.plot.scatter(x='Equilibrium Temperature [K]', y='Planet Radius [Earth Radius
 # Ici pour les exoplanètes potentielles et effectivement découvertes par K2
 k2.plot.scatter(y='Planet Radius [Earth Radius]',x='Equilibrium Temperature [K]');
 
-# On voit ici encore que K2 ne permet pas de détecter des planètes aussi grandes que celles détectées par TESS. Mais les températures des planètes ressencées sont du même ordre de grandeur.
+# On voit ici encore que __K2 ne permet pas de détecter des planètes aussi grandes que celles détectées par TESS__. Mais les températures des planètes ressencées sont du même ordre de grandeur.
 
 # ***
 
