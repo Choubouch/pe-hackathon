@@ -26,6 +26,9 @@ import utility as util
 # Nous avons trouvé 4 bases de données à exploiter. Elles contiennent les exoplanètes ou les candidats à être des exoplanètes. Deux proviennent du satellite TESS, une du satellite K2 et la dernière regroupe l'ensemble des exoplanètes confirmées.
 
 # ## Nettoyage des bases de données
+# > Pour faciliter la lecture, on n'utilisera qu'une seule cellule par base de données à nettoyer.
+# > 
+# > Évidemment, lors du développement, chaque opération était séparée dans une cellule.
 
 # Pour les exoplanètes trouvées par TESS :
 
@@ -161,7 +164,7 @@ df_Teq = df_Teq.dropna()
 
 # ## Traitement des données
 
-# #### Nombre de découverte en fonction de l'année
+# #### Nombre de découvertes en fonction de l'année
 
 # Ici pour les exoplanètes trouvées par TESS
 tcp.hist('Discovery Year', bins=50);
@@ -186,7 +189,7 @@ plt.title('Découvertes de planètes en fonction du temps')
 
 # On voit que les découvertes d'exoplanètes augementent dans le temps, ce qui est cohérent avec les fait que les téléscopes sont de plus en plus perfectionnés.
 
-#
+# ***
 
 # #### Répartition des rayons des planètes
 
@@ -199,10 +202,14 @@ tp['Planet Radius Value [R_Earth]'].hist(bins = 100, legend = True)
 # Ici pour les exoplanètes potentielles et effectivement trouvées par K2
 k2['Planet Radius [Earth Radius]'].hist(bins=100, legend = True)
 
+# ***
+
 # #### Répartition des masses des planètes
 
 # Ici pour les exoplanètes trouvées par TESS
 tcp.hist('Planet Mass or Mass*sin(i) [Earth Mass]', bins=50);
+
+# ***
 
 # #### Répartition des températures d'équilibre
 
@@ -218,7 +225,9 @@ k2['Equilibrium Temperature [K]'].hist(bins=500, legend = True)
 #température d'équilibre des exoplanètes confirmées
 df_Teq.hist(bins = 100)
 
-# #### Corrélation entre température de la planète et insolation
+# ***
+
+# #### Corrélation entre le température d'une planète et son insolation
 
 # Ici pour les exoplanètes trouvées par TESS
 tcp.plot.scatter(y='Equilibrium Temperature [K]', x='Insolation Flux [Earth Flux]');
@@ -232,7 +241,9 @@ k2.plot.scatter(x='Insolation Flux [Earth Flux]',y='Equilibrium Temperature [K]'
 #Pour les exoplanètes confirmées
 df_ti.plot.scatter(x='Insolation Flux [Earth Flux]', y='Equilibrium Temperature [K]')
 
-# #### Corrélation entre température de la planète et température de son étoile
+# ***
+
+# #### Corrélation entre la température d'une planète et la température de son étoile
 
 #Pour les exoplanètes confirmées
 tcp.plot.scatter(y='Equilibrium Temperature [K]', x='Stellar Effective Temperature [K]');
@@ -243,7 +254,9 @@ tp.plot.scatter(x = 'Stellar Effective Temperature Value [K]', y = 'Planet Equil
 # Ici pour les exoplanètes potentielles et effectivement trouvées par K2
 k2.plot.scatter(x='Insolation Flux [Earth Flux]',y='Equilibrium Temperature [K]')
 
-# #### Corrélation entre période de rotation et rayon de la planète
+# ***
+
+# #### Corrélation entre la période de rotation d'une planète et son rayon
 
 #Pour les exoplanètes confirmées
 tcp.plot.scatter(y='Orbital Period [days]', x='Planet Radius [Earth Radius]');
@@ -254,7 +267,9 @@ tp.plot.scatter(x = 'Planet Orbital Period Value [days]', y = 'Planet Radius Val
 # Ici pour les exoplanètes potentielles et effectivement trouvées par K2
 k2.plot.scatter(y='Planet Radius [Earth Radius]',x='Orbital Period [days]')
 
-# #### Corrélation du rayon des planètes en fonction de la température d'équilibre
+# ***
+
+# #### Corrélation entre le rayon d'une planète et sa température d'équilibre
 
 #Pour les exoplanètes confirmées
 tcp.plot.scatter(x='Equilibrium Temperature [K]', y='Planet Radius [Earth Radius]');
@@ -262,17 +277,23 @@ tcp.plot.scatter(x='Equilibrium Temperature [K]', y='Planet Radius [Earth Radius
 # Ici pour les exoplanètes potentielles et effectivement trouvées par K2
 k2.plot.scatter(y='Planet Radius [Earth Radius]',x='Equilibrium Temperature [K]')
 
-# #### Lien entre rayon des planètes et température d'équilibre en fonction de l'année
+# ***
+
+# #### Lien entre le rayon d'une planète et sa température d'équilibre en fonction de l'année
 
 #Pour les exoplanètes confirmées
 sns.relplot(data=tcp, x='Distance [pc]', y='Stellar Radius [Solar Radius]', hue='Discovery Year');
 
-# #### Lien entre température des planètes et de leur étoile en fonction de l'insolation des étoiles
+# ***
+
+# #### Lien entre la température d'une planètes et de son étoile en fonction de l'insolation de l'étoile
 
 #Pour les exoplanètes confirmées
 sns.relplot(data=tcp, x='Stellar Effective Temperature [K]', hue='Insolation Flux [Earth Flux]', y='Equilibrium Temperature [K]');
 
-# #### Les méthodes de découvertes d'exoplanètes les plus efficaces
+# ***
+
+# #### Efficacité des méthodes de découverte d'exoplanètes
 
 #pour les exoplanètes confirmées, les techniques qui donnent le plus de résultats
 explode = [0.8, 0, 0.4, 0.8, 0, 0.2, 0.5, 0.3, 0,0,0.2]
@@ -281,7 +302,9 @@ plt.title('Moyens de découverte les plus efficaces')
 
 # On voit donc que la technique dite du Transit est largement majoritaire
 
-# #### Distance des planètes découvertes en fonction du temps
+# ***
+
+# #### Évolution de notre distance aux planètes découvertes en fonction du temps
 
 Y2 = []
 for i in X : 
@@ -293,23 +316,3 @@ plt.plot(X, Y2)
 plt.title('Distance moyenne entre la terre et les planètes découvertes dans l année (en pc)')
 
 # A part quelques valeurs particulières en 1992, on voit que l'on découvre des planètes de plus en plus lointaines
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
